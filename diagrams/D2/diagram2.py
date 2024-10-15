@@ -1,36 +1,33 @@
-import graphviz
+from diagrams import Diagram, Cluster
+from diagrams.aws.compute import EC2
+from diagrams.aws.database import RDS
+from diagrams.onprem.compute import Server
+from diagrams.onprem.client import Users
+from diagrams.generic.network import Firewall
 
 def create_wazuh_diagram():
-    G = graphviz.Digraph('Wazuh Architecture', format='png')
+    with Diagram("Wazuh Architecture", show=False, direction="TB"):
+        
+        # Define nodes
+        master = Server("Master node")
+        worker = Server("Worker node")
+        pool = Server("Process pool")
+        integrity = Server("Local Integrity")
+        agent_db = RDS("Agent-info DB")
+        agent_sync = Server("Agent-info Sync")
+        integrity_sync = Server("Integrity Sync")
+        response = Server("Response")
 
-    # Create nodes
-    G.node("Master node")
-    G.node("Worker node")
-    G.node("Process pool")
-    G.node("Local integrity")
-    G.node("Agent-info DB")
-    G.node("Agent-info sync")
-    G.node("Integrity sync")
-    G.node("Response")
-
-    # Add edges
-    G.edge("Process pool", "Local integrity")
-    G.edge("Local integrity", "Agent-info DB")
-    G.edge("Master node", "Agent-info sync")
-    G.edge("Agent-info DB", "Agent-info sync")
-    G.edge("Agent-info sync", "Response")
-    G.edge("Master node", "Integrity sync")
-    G.edge("Integrity sync", "Response")
-    G.edge("Worker node", "Agent-info sync")
-    G.edge("Worker node", "Integrity sync")
-
-    # Set attributes (optional)
-    G.attr(rankdir='TB')  # Top to Bottom layout
-    G.attr('node', shape='ellipse')
-    G.attr('edge', color='blue')
-
-    return G
+        # Define relationships
+        pool >> integrity
+        integrity >> agent_db
+        master >> agent_sync
+        agent_db >> agent_sync
+        agent_sync >> response
+        master >> integrity_sync
+        integrity_sync >> response
+        worker >> agent_sync
+        worker >> integrity_sync
 
 # Generate and save the diagram
-diagram = create_wazuh_diagram()
-diagram.render('wazuh_architecture', cleanup=True)
+create_wazuh_diagram()
