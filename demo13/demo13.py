@@ -55,3 +55,22 @@ def create_wazuh_diagram():
 diagram = create_wazuh_diagram()
 diagram.render('wazuh_architecture', format='png', cleanup=True)
 print("Diagram saved as 'wazuh_architecture.png'")
+
+#To create Diagrams Step by step
+# 1 from graphviz import Digraph
+# 2 def create_node(graph, name, color='lightgrey', style='filled', shape='box'):
+#   graph.node(name, name, color=color, style=style, shape=shape)
+
+# 3 def create_wazuh_diagram():
+#  dot = Digraph(comment='Wazuh Architecture')
+#   dot.attr(rankdir='TB', ranksep='0.5')
+# 4 create_node(dot, 'Invinsense.core.cluster.client.AbstractClientManager')
+# 5 dot.edge('Invinsense.core.cluster.local_client.localClient', 'Invinsense.core.cluster.local_client.localClient', color='#4285F4')
+# 6 dot.attr('edge', color='#4285F4') To cahnge color
+# 7 diagram = create_wazuh_diagram()
+#diagram.render('wazuh_architecture', format='png', cleanup=True)
+#print("Diagram saved as 'wazuh_architecture.png'")
+
+
+
+

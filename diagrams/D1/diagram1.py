@@ -12,7 +12,7 @@ def create_wazuh_diagram():
     with Diagram("Invinsense Architecture", show=False, direction="TB"):
         # Create nodes
         manager = create_node("AbstractClientManager", color='lightblue')
-        local_client = create_node("LocalClient", color='lightgreen')
+        local_client = create_node("LocalClient", color='red')
         worker = create_node("Worker", color='lightcoral')
 
         # Add edges to represent relationships
