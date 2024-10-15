@@ -1,31 +1,24 @@
-from graphviz import Digraph
+from diagrams import Diagram
+from diagrams.generic.compute import Rack
+from diagrams.onprem.client import Users
+from diagrams.onprem.compute import Server
 
-def create_node(graph, name, color='lightblue', style='filled', shape='box'):
-    """Creates a node in the Graphviz graph."""
-    graph.node(name, name, color=color, style=style, shape=shape)
+def create_node(name, label=None, color='lightblue', shape='box'):
+    """Creates a node object with specific attributes."""
+    return Server(label or name)
 
 def create_wazuh_diagram():
-    """Creates a Graphviz diagram representing the Wazuh architecture."""
-    dot = Digraph(comment='Wazuh Architecture')
-    dot.attr(rankdir='TB', ranksep='0.5')
+    """Creates a Wazuh architecture diagram using the diagrams library."""
+    with Diagram("Invinsense Architecture", show=False, direction="TB"):
+        # Create nodes
+        manager = create_node("AbstractClientManager", color='lightblue')
+        local_client = create_node("LocalClient", color='lightgreen')
+        worker = create_node("Worker", color='lightcoral')
 
-    # Create nodes
-    create_node(dot, "Invinsense.core.cluster.client.AbstractClientManager", color='lightblue')
-    create_node(dot, "Invinsense.core.cluster.local_client.LocalClient", color='lightgreen')
-    create_node(dot, "Invinsense.core.cluster.worker.Worker", color='lightcoral')
-
-    # Create edges
-    dot.edge("Invinsense.core.cluster.client.AbstractClientManager", 
-             "Invinsense.core.cluster.local_client.LocalClient", label="Local Client")
-    dot.edge("Invinsense.core.cluster.client.AbstractClientManager", 
-             "Invinsense.core.cluster.worker.Worker", label="Worker")
-
-    # Set edge styles (optional)
-    dot.attr('edge', arrowhead='vee', arrowsize='1.2')
-
-    return dot
+        # Add edges to represent relationships
+        manager >> local_client
+        manager >> worker
 
 # Generate and save the diagram
-diagram = create_wazuh_diagram()
-diagram.render('Invinsense_architecture', format='png', cleanup=True)
-print("Diagram saved as 'Invinsense_architecture.png'")
+create_wazuh_diagram()
+print("Diagram saved as 'Invinsense_Architecture.png'")
